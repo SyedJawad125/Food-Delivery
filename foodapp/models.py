@@ -7,7 +7,7 @@ from user_auth.models import User
 class Payments(models.Model):
     payment_type = models.CharField(max_length=50)
     price = models.PositiveBigIntegerField()
-    worker_uers = models.ForeignKey(User, on_delete=models.CASCADE,related_name='worker_user1', null=True, blank=True)
+    worker_user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='worker_user1', null=True, blank=True)
 
 
 
@@ -28,4 +28,4 @@ class Products(models.Model):
     description = models.TextField()
     price = models.PositiveIntegerField()
     added_by = models.ForeignKey(User, on_delete=models.CASCADE,related_name='added_by_user', null=True, blank=True)
-    orders = models.ManyToManyField(Orders, related_name='kkk', null=True, blank=True)
+    orders = models.ManyToManyField(Orders, related_name='kkk')

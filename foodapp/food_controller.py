@@ -11,7 +11,7 @@ class PaymentsController:
 
     def create(self, request):
         request.POST._mutable = True
-        request.data["worker_uers"] = request.user.guid
+        request.data["worker_user"] = request.user.guid
         request.POST._mutable = False
 
         validated_data = PaymentsSerializer(data=request.data)
@@ -28,18 +28,18 @@ class PaymentsController:
         try:
             kwargs = {}
             id = request.query_params.get('id', None)
-            name = request.query_params.get('name', None)
-            end_name = request.query_params.get('end_name', None)
+            payment_type = request.query_params.get('payment_type', None)
+            price = request.query_params.get('price', None)
             date_to = request.query_params.get('date_to', None)
             date_from = request.query_params.get('date_from', None)
             date = request.query_params.get('date', None)
 
             if id:
                 kwargs['id'] = id
-            if name:
-                kwargs['name__icontains'] = name
-            if end_name:
-                kwargs['name__endswith'] = end_name
+            if payment_type:
+                kwargs['name__icontains'] = payment_type
+            if price:
+                kwargs['price'] = price
             if date:
                 kwargs['created_at__date'] = date
             if date_from:
@@ -62,7 +62,7 @@ class PaymentsController:
     
     
     def update_payments(self, request):
-        if "id" in request.query_params:
+        if "id" in request.data:
             #finding instance
             instance = Payments.objects.filter(id=request.query_params["id"]).first()
 
@@ -207,6 +207,8 @@ class ProductsController:
             kwargs = {}
             id = request.query_params.get('id', None)
             name = request.query_params.get('name', None)
+            description = request.query_params.get('description', None)
+            price =  request.query_params.get('price', None)
             end_name = request.query_params.get('end_name', None)
             date_to = request.query_params.get('date_to', None)
             date_from = request.query_params.get('date_from', None)
@@ -216,6 +218,10 @@ class ProductsController:
                 kwargs['id'] = id
             if name:
                 kwargs['name__icontains'] = name
+            if description:
+                kwargs['description'] = description
+            if price:
+                kwargs['price'] = price
             if end_name:
                 kwargs['name__endswith'] = end_name
             if date:
@@ -238,9 +244,9 @@ class ProductsController:
         except Exception as e:
             return Response({'error':str(e)}, 500)
     
-    
+
     def update_products(self, request):
-        if "id" in request.query_params:
+        if "id" in request.data:
             #finding instance
             instance = Products.objects.filter(id=request.query_params["id"]).first()
 
