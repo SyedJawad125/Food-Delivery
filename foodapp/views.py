@@ -9,6 +9,8 @@ from rest_framework.response import Response
 from utils.base_authentication import JWTAuthentication
 from .food_controller import PaymentsController, OrdersController, ProductsController
 
+from rest_framework.permissions import IsAdminUser
+
 
 payments_controller = PaymentsController()
 orders_controller = OrdersController()
@@ -48,6 +50,7 @@ class OrdersViews(ModelViewSet):
 
 class ProductsViews(ModelViewSet):
     authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAdminUser]
 
     def post_products(self, request):
         return products_controller.create(request)

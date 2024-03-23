@@ -10,18 +10,22 @@ from rest_framework.response import Response
 class PaymentsController:
 
     def create(self, request):
-        request.POST._mutable = True
-        request.data["worker_user"] = request.user.guid
-        request.POST._mutable = False
+        try:
+            request.POST._mutable = True
+            request.data["worker_user"] = request.user.guid
+            request.POST._mutable = False
 
-        validated_data = PaymentsSerializer(data=request.data)
-        if validated_data.is_valid():
-            response = validated_data.save()
-            response_data = PaymentsSerializer(response).data
-            return Response({'data':response_data} , 200)
-        else:
-            print("ok")
-            return Response({'data':"UNSUCESSFUL"}, 400)
+            validated_data = PaymentsSerializer(data=request.data)
+            if validated_data.is_valid():
+                response = validated_data.save()
+                response_data = PaymentsSerializer(response).data
+                return Response({'data':response_data} , 200)
+            else:
+                error_message = get_first_error_message(validated_data.errors, "UNSUCCESSFUL")
+                return Response({'data':error_message}, 400)
+            
+        except Exception as e:
+            return Response({'error':str(e)}, 500)
     
 #mydata = Member.objects.filter(firstname__endswith='s').values()
     def get_payments(self, request):
@@ -62,55 +66,67 @@ class PaymentsController:
     
     
     def update_payments(self, request):
-        if "id" in request.data:
-            #finding instance
-            instance = Payments.objects.filter(id=request.query_params["id"]).first()
+        try:
+            if "id" in request.data:
+                #finding instance
+                instance = Payments.objects.filter(id=request.data["id"]).first()
 
-            if instance:
-                # updating the instance/record
-                serialized_data = PaymentsSerializer(instance, data=request.data, partial=True)
+                if instance:
+                    # updating the instance/record
+                    serialized_data = PaymentsSerializer(instance, data=request.data, partial=True)
 
-                if serialized_data.is_valid():
-                    response = serialized_data.save()
-                    response_data = PaymentsSerializer(response).data
-                    return Response({"data":response_data}, 200)
+                    if serialized_data.is_valid():
+                        response = serialized_data.save()
+                        response_data = PaymentsSerializer(response).data
+                        return Response({"data":response_data}, 200)
+                    else:
+                        error_message = get_first_error_message(validated_data.errors, "UNSUCCESSFUL")
+                        return Response({'data':error_message}, 400)
+                    
                 else:
-                    return Response({"data":"In valid data"}, 400)
+                    return Response({"data":"NOT FOUND"}, 404)
             else:
-                return Response({"data":"NOT FOUND"}, 404)
-        else:
-            return Response({"data":"ID NOT PROVIDED"}, 400)
-
+                return Response({"data":"ID NOT PROVIDED"}, 400)
+            
+        except Exception as e:
+            return Response({'error':str(e)}, 500)
 
     def delete_payments(self, request):
-        if "id" in request.query_params:
-            instance = Payments.objects.filter(id=request.query_params['id']).first()
+        try:
+            if "id" in request.query_params:
+                instance = Payments.objects.filter(id=request.query_params['id']).first()
 
-            if instance:
-                instance.delete()
-                return Response({"data":"SUCESSFULL"}, 200)
+                if instance:
+                    instance.delete()
+                    return Response({"data":"SUCESSFULL"}, 200)
+                else:
+                    return Response({"data":"RECORD NOT FOUND"}, 404) 
             else:
-                return Response({"data":"RECORD NOT FOUND"}, 404) 
-        else:
-            return Response({"data":"ID NOT PROVIDED"}, 400)
-
+                return Response({"data":"ID NOT PROVIDED"}, 400)
+        except Exception as e:
+            return Response({'error':str(e)}, 500)
 
 
 class OrdersController:
 
     def create(self, request):
-        request.POST._mutable = True
-        request.data["customer_user"] = request.user.guid
-        request.POST._mutable = False
+        try:
+            request.POST._mutable = True
+            request.data["customer_user"] = request.user.guid
+            request.POST._mutable = False
 
-        validated_data = OrdersSerializer(data=request.data)
-        if validated_data.is_valid():
-            response = validated_data.save()
-            response_data = OrdersSerializer(response).data
-            return Response({'data':response_data} , 200)
-        else:
-            print("ok")
-            return Response({'data':"UNSUCESSFUL"}, 400)
+            validated_data = OrdersSerializer(data=request.data)
+            if validated_data.is_valid():
+                response = validated_data.save()
+                response_data = OrdersSerializer(response).data
+                return Response({'data':response_data} , 200)
+            else:
+                error_message = get_first_error_message(validated_data.errors, "UNSUCCESSFUL")
+                return Response({'data':error_message}, 400)
+            
+            
+        except Exception as e:
+            return Response({'data': str(e)}, 500)
     
 #mydata = Member.objects.filter(firstname__endswith='s').values()
     def get_orders(self, request):
@@ -150,56 +166,67 @@ class OrdersController:
     
     
     def update_orders(self, request):
+        try:
+            if "id" in request.data:
+                #finding instance
+                instance = Orders.objects.filter(id=request.data["id"]).first()
 
-        if "id" in request.data:
-            #finding instance
-            instance = Orders.objects.filter(id=request.data["id"]).first()
+                if instance:
+                    # updating the instance/record
+                    serialized_data = OrdersSerializer(instance, data=request.data, partial=True)
 
-            if instance:
-                # updating the instance/record
-                serialized_data = OrdersSerializer(instance, data=request.data, partial=True)
-
-                if serialized_data.is_valid():
-                    response = serialized_data.save()
-                    response_data = OrdersSerializer(response).data
-                    return Response({"data":response_data}, 200)
+                    if serialized_data.is_valid():
+                        response = serialized_data.save()
+                        response_data = OrdersSerializer(response).data
+                        return Response({"data":response_data}, 200)
+                    else:
+                        error_message = get_first_error_message(serialized_data.errors, 400)
+                        return Response({"data":error_message}, 400)
                 else:
-                    return Response({"data":"In valid data"}, 400)
+                    return Response({"data":"NOT FOUND"}, 404)
             else:
-                return Response({"data":"NOT FOUND"}, 404)
-        else:
-            return Response({"data":"ID NOT PROVIDED"}, 400)
+                return Response({"data":"ID NOT PROVIDED"}, 400)
+            
+        except Exception as e:
+            return Response({'data':str(e)}, 500)
 
 
     def delete_orders(self, request):
-        if "id" in request.query_params:
-            instance = Orders.objects.filter(id=request.query_params['id']).first()
+        try:
+            if "id" in request.query_params:
+                instance = Orders.objects.filter(id=request.query_params['id']).first()
 
-            if instance:
-                instance.delete()
-                return Response({"data":"SUCESSFULL"}, 200)
+                if instance:
+                    instance.delete()
+                    return Response({"data":"SUCESSFULL"}, 200)
+                else:
+                    return Response({"data":"RECORD NOT FOUND"}, 404) 
             else:
-                return Response({"data":"RECORD NOT FOUND"}, 404) 
-        else:
-            return Response({"data":"ID NOT PROVIDED"}, 400)
+                return Response({"data":"ID NOT PROVIDED"}, 400)
+            
+        except Exception as e:
+            return Response({'error':str(e)}, 500)    
 
 
 
 class ProductsController:
 
     def create(self, request):
-        request.POST._mutable = True
-        request.data["added_by"] = request.user.guid
-        request.POST._mutable = False
+        try:
+            request.POST._mutable = True
+            request.data["added_by"] = request.user.guid
+            request.POST._mutable = False
 
-        validated_data = ProductsSerializer(data=request.data)
-        if validated_data.is_valid():
-            response = validated_data.save()
-            response_data = ProductsSerializer(response).data
-            return Response({'data':response_data} , 200)
-        else:
-            print("ok")
-            return Response({'data':"UNSUCESSFUL"}, 400)
+            validated_data = ProductsSerializer(data=request.data)
+            if validated_data.is_valid():
+                response = validated_data.save()
+                response_data = ProductsSerializer(response).data
+                return Response({'data':response_data} , 200)
+            else:
+                error_message = get_first_error_message(validated_data.errors, "UNSUCCESSFUL")
+                return Response({'data':error_message}, 400)
+        except Exception as e:
+            return Response({'data': str(e)}, 500)
     
 #mydata = Member.objects.filter(firstname__endswith='s').values()
     def get_products(self, request):
@@ -246,34 +273,43 @@ class ProductsController:
     
 
     def update_products(self, request):
-        if "id" in request.data:
-            #finding instance
-            instance = Products.objects.filter(id=request.query_params["id"]).first()
+        try:
+            if "id" in request.data:
+                #finding instance
+                instance = Products.objects.filter(id=request.data["id"]).first()
 
-            if instance:
-                # updating the instance/record
-                serialized_data = ProductsSerializer(instance, data=request.data, partial=True)
+                if instance:
+                    # updating the instance/record
+                    serialized_data = ProductsSerializer(instance, data=request.data, partial=True)
 
-                if serialized_data.is_valid():
-                    response = serialized_data.save()
-                    response_data = ProductsSerializer(response).data
-                    return Response({"data":response_data}, 200)
+                    if serialized_data.is_valid():
+                        response = serialized_data.save()
+                        response_data = ProductsSerializer(response).data
+                        return Response({"data":response_data}, 200)
+                    else:
+                        error_message = get_first_error_message(serialized_data.errors, 400)
+                        return Response({"data":error_message}, 400)
                 else:
-                    return Response({"data":"In valid data"}, 400)
+                    return Response({"data":"NOT FOUND"}, 404)
             else:
-                return Response({"data":"NOT FOUND"}, 404)
-        else:
-            return Response({"data":"ID NOT PROVIDED"}, 400)
+                return Response({"data":"ID NOT PROVIDED"}, 400)
+
+        except Exception as e:
+            return Response({'data':str(e)}, 500)
 
 
     def delete_products(self, request):
-        if "id" in request.query_params:
-            instance = Products.objects.filter(id=request.query_params['id']).first()
+        try: 
+            if "id" in request.query_params:
+                instance = Products.objects.filter(id=request.query_params['id']).first()
 
-            if instance:
-                instance.delete()
-                return Response({"data":"SUCESSFULL"}, 200)
+                if instance:
+                    instance.delete()
+                    return Response({"data":"SUCESSFULL"}, 200)
+                else:
+                    return Response({"data":"RECORD NOT FOUND"}, 404) 
             else:
-                return Response({"data":"RECORD NOT FOUND"}, 404) 
-        else:
-            return Response({"data":"ID NOT PROVIDED"}, 400)
+                return Response({"data":"ID NOT PROVIDED"}, 400)
+            
+        except Exception as e:
+            return Response({'data':str(e)}, 500)

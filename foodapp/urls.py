@@ -15,5 +15,6 @@ urlpatterns=[
     path('products', ProductsViews.as_view({"get":"get_products",
                             "post":"post_products",
                             "patch":"update_products",
-                            "delete":"delete_products"})),                                                
+                            "delete":"delete_products"})),
+
 ]
