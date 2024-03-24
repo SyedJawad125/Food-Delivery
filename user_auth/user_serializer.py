@@ -71,3 +71,10 @@ class UserListingSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['guid','get_full_name', 'email']
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields='__all__'
+        

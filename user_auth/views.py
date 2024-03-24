@@ -8,6 +8,7 @@ register_controller = RegisterController()
 login_controller = LoginController()
 logout_controller = LogoutController()
 change_password_controller = ChangePasswordController()
+user_listing_controller = UserListingController()
 
 
 class RegisterAPIView(ModelViewSet):
@@ -33,3 +34,11 @@ class ChangePasswordAPIView(ModelViewSet):
     
     def post(self,request):
         return change_password_controller.change_password(request)
+    
+
+class UserListingAPIView(ModelViewSet):
+    
+    authentication_classes = (JWTAuthentication,)
+    
+    def get_user(self,request):
+        return user_listing_controller.get_user(request)
