@@ -34,3 +34,5 @@ class ProductsSerializer(ModelSerializer):
         data = super().to_representation(instance)
         data['added_by'] = UserListingSerializer(instance.added_by).data if instance.added_by else None
         return data
+
+

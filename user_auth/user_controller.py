@@ -7,6 +7,7 @@ from user_auth.models import Token, User
 from utils.reusable_methods import get_first_error_message, generate_six_length_random_number
 from utils.response_messages import *
 from utils.helper import create_response, paginate_data
+from django.db.models import Count
 
 
 class ChangePasswordController:
@@ -41,8 +42,6 @@ class RegisterController:
                 return create_response({}, get_first_error_message(serialized_data.errors, UNSUCCESSFUL), status_code=400)
         except Exception as e:
             return create_response({'error':str(e)}, UNSUCCESSFUL, 500)
-
-
 
         
 class LoginController:
@@ -120,6 +119,9 @@ class UserListingController:
             return Response(response_data, 200)
         except Exception as e:
             return Response({'error':str(e)}, 500)
+
+
+
             
     # def get_courses(self, request):
     #     instances = Courses.objects.all()

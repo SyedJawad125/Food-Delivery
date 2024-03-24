@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 from user_auth.models import User
+# from foodapp.food_serializer import ProductsNumberSerializer
+from foodapp.models import Products
 
 
 class ChangePasswordSerializer(serializers.Serializer):
@@ -73,8 +75,20 @@ class UserListingSerializer(serializers.ModelSerializer):
         fields = ['guid','get_full_name', 'email']
 
 
+
+
+class ProductsNumberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Products
+        fields='__all__'
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields='__all__'
-        
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['added_by_user'] = ProductsNumberSerializer(instance.added_by_user.all(), many=True).data if instance.added_by_user else None
+        return data
