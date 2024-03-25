@@ -4,7 +4,7 @@ from foodapp.food_serializer import *
 from foodapp.models import Payments, Orders, Products
 from utils.reusable_methods import get_first_error_message, generate_six_length_random_number
 from rest_framework.response import Response
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, Avg
 # from vehicle.serializer import serializer
 
 
@@ -331,5 +331,24 @@ class ProductsController:
             return Response(response_data, status=200)
          except Exception as e:
             return Response({'data':str(e)}, 500)
+
+
+
+    def products_annotation(self, request):
+        try:
+            instances = Products.objects.all()
+
+            by_price = instances.values('price').annotate(count=Count('price'))
+            by_user = instances.values('added_by').annotate(count=Count('added_by'))
+
+            response_data = {
+                'title': 'Annotation',
+                'by_price': by_price,
+                'by_user': by_user
+            }
+
+            return Response(response_data, status=200)
+        except Exception as e:
+            return Response({'data': str(e)}, 500)
          
     

@@ -68,4 +68,9 @@ class ProductsViews(ModelViewSet):
         return products_controller.products_aggregation(request)
 
 
+    def products_annotation(self, request):
+        return products_controller.products_annotation(request)
+
+
+
     

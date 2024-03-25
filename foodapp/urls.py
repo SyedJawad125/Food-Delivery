@@ -18,7 +18,10 @@ urlpatterns=[
                             "delete":"delete_products"})),
 
      
-     path('products/aggregation', ProductsViews.as_view({"get":"products_aggregation"})),
-     #path('products/aggregation/', ProductsViews.as_view(), name='product-aggregation'),
+    path('products/aggregation', ProductsViews.as_view({"get":"products_aggregation"})),
+
+    path('products/annotation', ProductsViews.as_view({"get": "products_annotation"})),
+
+    #path('products/aggregation/', ProductsViews.as_view(), name='product-aggregation'),
 
 ]
