@@ -72,7 +72,7 @@ class LoginSerializer(serializers.Serializer):
 class UserListingSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['guid','get_full_name', 'email']
+        fields = ['guid', 'get_full_name', 'phone', 'email']
 
 
 
