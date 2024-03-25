@@ -64,3 +64,8 @@ class ProductsViews(ModelViewSet):
     def delete_products(self, request):
         return products_controller.delete_products(request)
     
+    def products_aggregation(self, request):
+        return products_controller.products_aggregation(request)
+
+
+    

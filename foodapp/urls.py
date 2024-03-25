@@ -17,4 +17,8 @@ urlpatterns=[
                             "patch":"update_products",
                             "delete":"delete_products"})),
 
+     
+     path('products/aggregation', ProductsViews.as_view({"get":"products_aggregation"})),
+     #path('products/aggregation/', ProductsViews.as_view(), name='product-aggregation'),
+
 ]
