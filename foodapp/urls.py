@@ -22,6 +22,6 @@ urlpatterns=[
 
     path('products/annotation', ProductsViews.as_view({"get": "products_annotation"})),
 
-    #path('products/aggregation/', ProductsViews.as_view(), name='product-aggregation'),
+    path('products/fexpression', ProductsViews.as_view({"get": "products_fexpression"})),
 
 ]

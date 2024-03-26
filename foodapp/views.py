@@ -70,6 +70,9 @@ class ProductsViews(ModelViewSet):
 
     def products_annotation(self, request):
         return products_controller.products_annotation(request)
+    
+    def products_fexpression(self, request):
+        return products_controller.products_fexpression(request)
 
 
 
