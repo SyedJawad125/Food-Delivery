@@ -7,6 +7,9 @@ from rest_framework.response import Response
 from django.db.models import Sum, Count, Avg, F
 # from vehicle.serializer import serializer
 
+from foodsite.settings import EMAIL_HOST_USER
+from django.core.mail import send_mail
+
 
 class PaymentsController:
 
@@ -120,6 +123,10 @@ class OrdersController:
             if validated_data.is_valid():
                 response = validated_data.save()
                 response_data = OrdersSerializer(response).data
+                email_list = ['syedjawadali92@gmail.com', 's.haider0303@gmail.com']
+
+                send_mail("Subject of Email", f"An Order booked for food order_id {response.id}", EMAIL_HOST_USER, email_list)
+
                 return Response({'data':response_data} , 200)
             else:
                 error_message = get_first_error_message(validated_data.errors, "UNSUCCESSFUL")

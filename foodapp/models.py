@@ -29,3 +29,5 @@ class Products(models.Model):
     price = models.PositiveIntegerField()
     added_by = models.ForeignKey(User, on_delete=models.CASCADE,related_name='added_by_user', null=True, blank=True)
     orders = models.ManyToManyField(Orders, related_name='kkk', null=True, blank=True)
+
+
